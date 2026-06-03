@@ -11,26 +11,69 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/admin.css">
   <link rel="stylesheet" href="css/pages.css">
+  <script>
+    // Inline check to prevent layout flashing
+    if (sessionStorage.getItem('admin_authenticated') === 'true') {
+      document.write('<style>.lock-screen-overlay { display: none !important; }</style>');
+    } else {
+      document.write('<style>body { overflow: hidden !important; }</style>');
+    }
+  </script>
 </head>
 <body class="admin-body">
+
+  <!-- ======== SECURITY LOCK SCREEN ======== -->
+  <div id="admin-lock-screen" class="lock-screen-overlay">
+    <div class="lock-screen-card">
+      <div class="lock-screen-logo">🍕</div>
+      <h2>7 DAYS PIZZA</h2>
+      <p>Secure Pizzaiolo Terminal</p>
+      
+      <div class="passcode-display">
+        <input type="password" id="passcode-input" readonly placeholder="••••">
+      </div>
+      
+      <div class="pin-pad">
+        <button class="pin-btn" onclick="pressPin('1')">1</button>
+        <button class="pin-btn" onclick="pressPin('2')">2</button>
+        <button class="pin-btn" onclick="pressPin('3')">3</button>
+        <button class="pin-btn" onclick="pressPin('4')">4</button>
+        <button class="pin-btn" onclick="pressPin('5')">5</button>
+        <button class="pin-btn" onclick="pressPin('6')">6</button>
+        <button class="pin-btn" onclick="pressPin('7')">7</button>
+        <button class="pin-btn" onclick="pressPin('8')">8</button>
+        <button class="pin-btn" onclick="pressPin('9')">9</button>
+        <button class="pin-btn text-btn" onclick="clearPin()">Clear</button>
+        <button class="pin-btn" onclick="pressPin('0')">0</button>
+        <button class="pin-btn text-btn enter-btn" onclick="submitPin()">Enter</button>
+      </div>
+      <div id="login-error-msg" class="login-error">Invalid Passcode</div>
+      <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 16px;">
+        Default PIN is 1213 or 7777
+      </div>
+    </div>
+  </div>
 
   <!-- Mobile Sidebar FAB -->
   <button onclick="toggleAdminSidebar()" class="btn btn-primary" id="mobile-sidebar-toggle"
     style="position:fixed; bottom:24px; right:24px; z-index:1000; padding:0; border-radius:50%; width:56px; height:56px; display:none; font-size:1.3rem;">
     ☰
   </button>
-
+ 
   <!-- ======== SIDEBAR ======== -->
   <aside class="admin-sidebar">
     <div class="admin-logo">
       <span>🍕</span> 7 DAYS ADMIN
     </div>
-
+ 
     <ul class="admin-menu">
       <li class="admin-menu-item active"><a href="#overview">📊 Overview</a></li>
       <li class="admin-menu-item"><a href="#orders-management">🛒 Orders Queue</a></li>
       <li class="admin-menu-item"><a href="#inventory-management">📦 Live Inventory</a></li>
       <li class="admin-menu-item"><a href="#menu-management">📝 Menu Manager</a></li>
+      <li class="admin-menu-item" style="margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 8px;">
+        <a href="#" onclick="logoutAdmin(event)" style="color: var(--danger);"><span style="color: var(--danger);">🔒</span> Lock Terminal</a>
+      </li>
     </ul>
 
     <div style="margin-top: auto;">

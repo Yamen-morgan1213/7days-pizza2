@@ -817,3 +817,173 @@
 .inv-stock-input {
   -moz-appearance: textfield;
 }
+
+/* ========================================
+   SECURITY LOCK SCREEN STYLES
+   ======================================== */
+body.locked .admin-sidebar,
+body.locked .admin-main,
+body.locked #mobile-sidebar-toggle {
+  display: none !important;
+}
+
+.lock-screen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, #16151a 0%, #08080a 100%);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(20px);
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lock-screen-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-30px);
+}
+
+.lock-screen-card {
+  background: rgba(18, 18, 22, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 40px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 107, 8, 0.03);
+  backdrop-filter: blur(10px);
+}
+
+.lock-screen-logo {
+  font-size: 3.5rem;
+  margin-bottom: 12px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.lock-screen-card h2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lock-screen-card p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.passcode-display {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.passcode-display input {
+  width: 100%;
+  background: rgba(8, 8, 10, 0.8);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 12px;
+  border-radius: 12px;
+  letter-spacing: 6px;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.passcode-display input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(255, 107, 8, 0.15);
+}
+
+.pin-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.pin-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 16px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.pin-btn:hover {
+  background: rgba(255, 107, 8, 0.1);
+  border-color: rgba(255, 107, 8, 0.3);
+  color: var(--accent);
+  transform: scale(1.05);
+}
+
+.pin-btn:active {
+  transform: scale(0.95);
+}
+
+.pin-btn.text-btn {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.pin-btn.text-btn.enter-btn {
+  color: var(--success);
+  background: rgba(46, 196, 182, 0.08);
+  border-color: rgba(46, 196, 182, 0.15);
+}
+
+.pin-btn.text-btn.enter-btn:hover {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+  box-shadow: 0 4px 15px rgba(46, 196, 182, 0.3);
+}
+
+.login-error {
+  color: var(--danger);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 12px;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: all 0.3s ease;
+}
+
+.login-error.show {
+  opacity: 1;
+  transform: translateY(0);
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}

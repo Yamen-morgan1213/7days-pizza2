@@ -8,7 +8,12 @@ class AdminPortal {
   constructor() {
     this.initElements();
     this.initEvents();
-    this.render();
+    
+    if (sessionStorage.getItem('admin_authenticated') === 'true') {
+      this.render();
+    } else {
+      document.body.classList.add('locked');
+    }
   }
 
   initElements() {
@@ -403,26 +408,29 @@ class AdminPortal {
           const card = this.inventoryList.querySelector(`.inventory-card[data-name="${item.item_name}"]`);
           if (card) {
             const stockValSpan = card.querySelector('.stock-value');
-            if (stockValSpan) {
-              stockValSpan.textContent = item.stock;
-            }
             const input = card.querySelector('.inv-stock-input');
+            
+            // Only update UI values if the user isn't actively editing this input
             if (input && document.activeElement !== input) {
-              input.value = item.stock;
-            }
-            const badge = card.querySelector('.inventory-badge');
-            if (badge) {
-              let badgeClass = 'optimal';
-              let badgeText = 'Optimal Stock';
-              if (item.stock < 10) {
-                badgeClass = 'critical';
-                badgeText = 'Restock Urgently';
-              } else if (item.stock < 30) {
-                badgeClass = 'warning';
-                badgeText = 'Low Stock';
+              if (stockValSpan) {
+                stockValSpan.textContent = item.stock;
               }
-              badge.className = `inventory-badge ${badgeClass}`;
-              badge.textContent = badgeText;
+              input.value = item.stock;
+              
+              const badge = card.querySelector('.inventory-badge');
+              if (badge) {
+                let badgeClass = 'optimal';
+                let badgeText = 'Optimal Stock';
+                if (item.stock < 10) {
+                  badgeClass = 'critical';
+                  badgeText = 'Restock Urgently';
+                } else if (item.stock < 30) {
+                  badgeClass = 'warning';
+                  badgeText = 'Low Stock';
+                }
+                badge.className = `inventory-badge ${badgeClass}`;
+                badge.textContent = badgeText;
+              }
             }
           }
         });
@@ -460,7 +468,10 @@ class AdminPortal {
               <span class="stock-value">${item.stock}</span>
               <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); margin-left: 4px;">units</span>
             </div>
-            <input type="number" class="inv-stock-input" value="${item.stock}" min="0" style="width: 70px; height: 32px; font-size: 0.9rem; text-align: center; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <input type="number" class="inv-stock-input" value="${item.stock}" min="0" style="width: 70px; height: 32px; font-size: 0.9rem; text-align: center; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);">
+              <button class="inv-save-btn" style="background: rgba(46, 196, 182, 0.15); border: 1px solid rgba(46, 196, 182, 0.3); color: var(--success); border-radius: 4px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; font-size: 1rem; font-weight: bold;" title="Save Custom Stock">✓</button>
+            </div>
           </div>
           <div class="inventory-actions" style="display: flex; gap: 6px; width: 100%; justify-content: space-between;">
             <button class="inv-action-btn btn-plus10" data-action="add" data-val="10" style="flex: 1; padding: 8px 4px; font-size: 0.75rem; border-radius: 4px; background: rgba(46,196,182,0.1); border: 1px solid rgba(46,196,182,0.2); color: var(--success); cursor: pointer; transition: all 0.2s;">+10</button>
@@ -469,13 +480,46 @@ class AdminPortal {
           </div>
         `;
 
-        // Event listener for action buttons
+        const input = card.querySelector('.inv-stock-input');
+        const saveBtn = card.querySelector('.inv-save-btn');
+
+        // Centralized stock saving logic
+        const saveStock = async (newVal) => {
+          const newStock = Math.max(0, parseInt(newVal) || 0);
+          input.value = newStock;
+          const stockValSpan = card.querySelector('.stock-value');
+          if (stockValSpan) stockValSpan.textContent = newStock;
+
+          // Responsive badge update
+          const badge = card.querySelector('.inventory-badge');
+          if (badge) {
+            let bClass = 'optimal';
+            let bText = 'Optimal Stock';
+            if (newStock < 10) {
+              bClass = 'critical';
+              bText = 'Restock Urgently';
+            } else if (newStock < 30) {
+              bClass = 'warning';
+              bText = 'Low Stock';
+            }
+            badge.className = `inventory-badge ${bClass}`;
+            badge.textContent = bText;
+          }
+
+          try {
+            await window.PizzaDB.updateInventoryStock(item.item_name, newStock);
+            this.showAdminNotification(`Successfully updated ${item.item_name} stock to ${newStock}!`);
+          } catch (err) {
+            console.error('Failed to update inventory:', err);
+            this.showAdminNotification('Failed to update inventory', 'warning');
+          }
+        };
+
+        // Event listener for action buttons (+10, +50, reset)
         card.querySelectorAll('.inv-action-btn').forEach(btn => {
           btn.addEventListener('click', async () => {
             const action = btn.dataset.action;
             const val = parseInt(btn.dataset.val);
-            const input = card.querySelector('.inv-stock-input');
-            const stockValSpan = card.querySelector('.stock-value');
             let currentStock = parseInt(input.value) || 0;
             let newStock = currentStock;
 
@@ -485,48 +529,27 @@ class AdminPortal {
               newStock = val;
             }
 
-            input.value = newStock;
-            if (stockValSpan) stockValSpan.textContent = newStock;
-
-            // Responsive badge update
-            const badge = card.querySelector('.inventory-badge');
-            if (badge) {
-              let bClass = 'optimal';
-              let bText = 'Optimal Stock';
-              if (newStock < 10) {
-                bClass = 'critical';
-                bText = 'Restock Urgently';
-              } else if (newStock < 30) {
-                bClass = 'warning';
-                bText = 'Low Stock';
-              }
-              badge.className = `inventory-badge ${bClass}`;
-              badge.textContent = bText;
-            }
-
-            try {
-              await window.PizzaDB.updateInventoryStock(item.item_name, newStock);
-            } catch (err) {
-              console.error('Failed to update inventory:', err);
-              this.showAdminNotification('Failed to update inventory', 'warning');
-            }
+            await saveStock(newStock);
           });
         });
 
-        // Event listener for manual text change
-        const input = card.querySelector('.inv-stock-input');
-        input.addEventListener('change', async (e) => {
-          const newStock = Math.max(0, parseInt(e.target.value) || 0);
-          e.target.value = newStock;
-          const stockValSpan = card.querySelector('.stock-value');
-          if (stockValSpan) stockValSpan.textContent = newStock;
+        // Save on checkmark button click
+        if (saveBtn) {
+          saveBtn.addEventListener('click', () => saveStock(input.value));
+        }
 
-          try {
-            await window.PizzaDB.updateInventoryStock(item.item_name, newStock);
-          } catch (err) {
-            console.error('Failed to update inventory:', err);
-            this.showAdminNotification('Failed to update inventory', 'warning');
+        // Save on enter key press
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            saveStock(input.value);
+            input.blur();
           }
+        });
+
+        // Save on blur/change
+        input.addEventListener('change', () => {
+          saveStock(input.value);
         });
 
         this.inventoryList.appendChild(card);
@@ -573,6 +596,75 @@ class AdminPortal {
 window.toggleAdminSidebar = () => {
   document.querySelector('.admin-sidebar').classList.toggle('open');
 };
+
+// ── Admin Lock Screen Security Logic ──
+let currentPin = "";
+
+window.pressPin = (num) => {
+  const inputEl = document.getElementById('passcode-input');
+  if (inputEl && currentPin.length < 8) {
+    currentPin += num;
+    inputEl.value = currentPin;
+    const errEl = document.getElementById('login-error-msg');
+    if (errEl) errEl.classList.remove('show');
+  }
+};
+
+window.clearPin = () => {
+  currentPin = "";
+  const inputEl = document.getElementById('passcode-input');
+  if (inputEl) inputEl.value = "";
+  const errEl = document.getElementById('login-error-msg');
+  if (errEl) errEl.classList.remove('show');
+};
+
+window.submitPin = () => {
+  const validPasscodes = ['1213', '7777', '7daysadmin', 'admin123'];
+  if (validPasscodes.includes(currentPin)) {
+    sessionStorage.setItem('admin_authenticated', 'true');
+    document.body.classList.remove('locked');
+    const overlay = document.getElementById('admin-lock-screen');
+    if (overlay) {
+      overlay.classList.add('hidden');
+      setTimeout(() => overlay.remove(), 500);
+    }
+    
+    // Render the admin portal once successfully authenticated
+    if (window.adminPortal) {
+      window.adminPortal.render();
+    }
+  } else {
+    const errEl = document.getElementById('login-error-msg');
+    if (errEl) errEl.classList.add('show');
+    currentPin = "";
+    const inputEl = document.getElementById('passcode-input');
+    if (inputEl) inputEl.value = "";
+  }
+};
+
+window.logoutAdmin = (e) => {
+  if (e) e.preventDefault();
+  sessionStorage.removeItem('admin_authenticated');
+  window.location.reload();
+};
+
+// Listen for keyboard inputs on lock screen
+window.addEventListener('keydown', (e) => {
+  const overlay = document.getElementById('admin-lock-screen');
+  if (!overlay || overlay.classList.contains('hidden')) return;
+
+  if (e.key >= '0' && e.key <= '9') {
+    pressPin(e.key);
+  } else if (e.key === 'Backspace') {
+    currentPin = currentPin.slice(0, -1);
+    const inputEl = document.getElementById('passcode-input');
+    if (inputEl) inputEl.value = currentPin;
+  } else if (e.key === 'Enter') {
+    submitPin();
+  } else if (e.key === 'Escape') {
+    clearPin();
+  }
+});
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Wait for Supabase connection before building admin UI
