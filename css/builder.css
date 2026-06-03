@@ -1,0 +1,366 @@
+/* =============================================
+   INTERACTIVE PIZZA BUILDER STYLES
+   ============================================= */
+.builder-section {
+  padding: 100px 0;
+  background: 
+    radial-gradient(circle at 10% 50%, rgba(21, 17, 16, 0.8) 0%, transparent 50%),
+    radial-gradient(circle at 90% 50%, rgba(var(--accent-rgb), 0.03) 0%, transparent 50%),
+    var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.builder-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+/* Left Column: Visual Pizza Canvas */
+.pizza-visualizer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.04) 0%, transparent 65%);
+  border-radius: var(--border-radius-round);
+}
+
+.pizza-visualizer {
+  position: relative;
+  width: 90%;
+  max-width: 440px;
+  aspect-ratio: 1;
+  perspective: 1000px;
+}
+
+/* Rotating Wooden Board */
+.pizza-board {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #3d2314 40%, #1e110a 90%);
+  border: 10px solid #2e1b10;
+  box-shadow: 
+    0 20px 45px rgba(0, 0, 0, 0.8), 
+    inset 0 2px 5px rgba(255,255,255,0.1),
+    0 0 60px rgba(var(--accent-rgb), 0.05);
+  transform: rotateX(18deg);
+  transition: transform var(--transition-slow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* Crust and toppings wrapper */
+.pizza-pizza {
+  position: relative;
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #e29543 50%, #8b4513 95%);
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.4), 0 8px 15px rgba(0, 0, 0, 0.6);
+  z-index: 2;
+  overflow: visible;
+  transition: transform 0.5s ease;
+}
+
+/* Sauce layer */
+.pizza-sauce {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #800000 60%, #b30000 85%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 3;
+}
+
+.pizza-sauce.active {
+  opacity: 1;
+}
+
+/* Cheese layer */
+.pizza-cheese {
+  position: absolute;
+  top: 7%;
+  left: 7%;
+  width: 86%;
+  height: 86%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,235,160,0.9) 30%, rgba(244,208,63,0.95) 75%);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 4;
+}
+
+.pizza-cheese.active {
+  opacity: 1;
+}
+
+/* Placed Toppings */
+.pizza-toppings-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+
+.topping-placed {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 3px 4px rgba(0,0,0,0.4));
+  transform: translate(-50%, -50%) scale(0);
+  animation: toppingFall 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+}
+
+@keyframes toppingFall {
+  0% {
+    transform: translate(-50%, -150px) scale(1.8) rotate(30deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(var(--rot, 0deg));
+    opacity: 1;
+  }
+}
+
+/* Woodfired Glow */
+.oven-glow {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 50px;
+  background: radial-gradient(ellipse, rgba(var(--accent-rgb), 0.2) 0%, transparent 70%);
+  z-index: 0;
+  filter: blur(10px);
+  animation: breathe 3s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Right Column: Customizer Interface */
+.builder-controls {
+  background: rgba(18, 18, 22, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  padding: 36px;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.builder-section-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+}
+
+.builder-tab {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 16px;
+  position: relative;
+  transition: color var(--transition-fast);
+  border-radius: var(--border-radius-sm);
+}
+
+.builder-tab:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.builder-tab.active {
+  color: var(--accent);
+}
+
+.builder-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -13px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-gold));
+  border-radius: 2px;
+}
+
+/* Toppings Panels */
+.builder-panel {
+  display: none;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.builder-panel.active {
+  display: grid;
+}
+
+.topping-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.topping-card:hover {
+  border-color: var(--text-muted);
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.topping-card.selected {
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.08);
+  box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.08);
+}
+
+.topping-icon {
+  width: 38px;
+  height: 38px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 50%;
+  background-color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+.topping-details h4 {
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  margin-bottom: 1px;
+}
+
+.topping-details span {
+  font-size: 0.75rem;
+  color: var(--accent-gold);
+  font-weight: 500;
+}
+
+/* Summary section */
+.builder-summary {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.builder-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.builder-summary-row span {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.builder-summary-row.total-price {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-top: 16px;
+  color: var(--text-primary);
+}
+
+.builder-summary-row.total-price span {
+  color: var(--accent-gold);
+}
+
+/* ========================================
+   RESPONSIVE BUILDER
+   ======================================== */
+@media (max-width: 991px) {
+  .builder-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .pizza-visualizer-container {
+    max-width: 360px;
+    margin: 0 auto;
+  }
+  .builder-controls {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .builder-section {
+    padding: 60px 0;
+  }
+  .builder-controls {
+    padding: 16px;
+  }
+  .builder-panel {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .topping-card {
+    padding: 10px 8px;
+    gap: 8px;
+    border-radius: var(--border-radius-sm);
+  }
+  .topping-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.95rem;
+  }
+  .topping-details h4 {
+    font-size: 0.72rem;
+  }
+  .topping-details span {
+    font-size: 0.62rem;
+  }
+  .pizza-visualizer-container {
+    max-width: 290px;
+  }
+  .builder-section-tabs {
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .builder-tab {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+}

@@ -1,0 +1,64 @@
+/* =============================================
+   DESIGN TOKENS & VARIABLES — 7 Days Pizza
+   ============================================= */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap');
+
+:root {
+  /* Colors */
+  --bg-primary: #0a0a0c;
+  --bg-secondary: #121216;
+  --bg-tertiary: #1a1a22;
+  
+  --accent: #ff6b08;
+  --accent-rgb: 255, 107, 8;
+  --accent-hover: #ff8533;
+  --accent-light: rgba(255, 107, 8, 0.1);
+  --accent-gold: #d4af37;
+  --accent-gold-rgb: 212, 175, 55;
+  
+  --text-primary: #f7f5f0;
+  --text-secondary: #a0a0a8;
+  --text-muted: #62626c;
+  
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(255, 107, 8, 0.15);
+  
+  --success: #2ec4b6;
+  --success-rgb: 46, 196, 182;
+  --warning: #ffb703;
+  --danger: #e63946;
+  --info: #00b4d8;
+
+  /* Typography */
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Outfit', sans-serif;
+
+  /* Shadows & Blur */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.8);
+  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.9);
+  --shadow-glow: 0 0 20px rgba(255, 107, 8, 0.3);
+  --shadow-glow-strong: 0 0 40px rgba(255, 107, 8, 0.5);
+  --shadow-glow-green: 0 0 20px rgba(46, 196, 182, 0.3);
+  
+  --glass-bg: rgba(18, 18, 22, 0.7);
+  --glass-blur: blur(16px);
+  --glass-border: rgba(255, 255, 255, 0.06);
+
+  /* Layout */
+  --header-height: 80px;
+  --sidebar-width: 280px;
+  --container-max: 1300px;
+  --border-radius-sm: 8px;
+  --border-radius-md: 16px;
+  --border-radius-lg: 24px;
+  --border-radius-xl: 32px;
+  --border-radius-round: 50%;
+
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-normal: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7 Days Pizza | Restaurant Administration Control</title>
+  <meta name="description" content="Restaurant operations dashboard — manage orders, menu items, and analytics in real-time.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="admin-body">
+
+  <!-- Mobile Sidebar FAB -->
+  <button onclick="toggleAdminSidebar()" class="btn btn-primary" id="mobile-sidebar-toggle"
+    style="position:fixed; bottom:24px; right:24px; z-index:1000; padding:0; border-radius:50%; width:56px; height:56px; display:none; font-size:1.3rem;">
+    ☰
+  </button>
+
+  <!-- ======== SIDEBAR ======== -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <span>🍕</span> 7 DAYS ADMIN
+    </div>
+
+    <ul class="admin-menu">
+      <li class="admin-menu-item active"><a href="#overview">📊 Overview</a></li>
+      <li class="admin-menu-item"><a href="#orders-management">🛒 Orders Queue</a></li>
+      <li class="admin-menu-item"><a href="#inventory-management">📦 Live Inventory</a></li>
+      <li class="admin-menu-item"><a href="#menu-management">📝 Menu Manager</a></li>
+    </ul>
+
+    <div style="margin-top: auto;">
+      <a href="index.html" class="btn btn-glow" style="width:100%; padding: 14px; font-size: 0.9rem;">
+        ← Customer Site
+      </a>
+      <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+        <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.6;">
+          Dashboard v2.4.0<br>
+          Store Helsinki #1<br>
+          <span style="color: var(--success);">● System Online</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ======== MAIN CONTENT ======== -->
+  <main class="admin-main">
+    <!-- Admin Header -->
+    <header class="admin-header" style="position:static; background:none; border-bottom:none; height:auto; padding:0;">
+      <div>
+        <h1>Operations Dashboard</h1>
+        <p style="color: var(--text-secondary); margin-top:4px;">Real-time monitoring and menu configuration hub.</p>
+      </div>
+      <div class="admin-user">
+        <div style="text-align: right;">
+          <h4 style="font-family: var(--font-body); font-weight:600;">Chef Marco</h4>
+          <span style="font-size: 0.8rem; color: var(--accent-gold);">Head Pizzaiolo</span>
+        </div>
+        <div class="admin-avatar">M</div>
+      </div>
+    </header>
+
+    <!-- ======== STATS CARDS ======== -->
+    <section class="admin-stats-grid">
+      <div class="stat-card" style="border-left: 3px solid var(--accent);">
+        <div class="stat-icon">💰</div>
+        <h3>Total Revenue</h3>
+        <div class="stat-number" id="stat-total-sales">$0.00</div>
+        <div class="stat-change up">▲ +14.2% <span style="color:var(--text-muted);">this week</span></div>
+      </div>
+      <div class="stat-card" style="border-left: 3px solid var(--accent-gold);">
+        <div class="stat-icon">🍕</div>
+        <h3>Orders Placed</h3>
+        <div class="stat-number" id="stat-total-orders">0</div>
+        <div class="stat-change up">▲ +8.7% <span style="color:var(--text-muted);">this week</span></div>
+      </div>
+      <div class="stat-card" style="border-left: 3px solid var(--info);">
+        <div class="stat-icon">📈</div>
+        <h3>Average Ticket</h3>
+        <div class="stat-number" id="stat-avg-value">$0.00</div>
+        <div class="stat-change down">▼ -2.1% <span style="color:var(--text-muted);">this week</span></div>
+      </div>
+      <div class="stat-card" style="border-left: 3px solid var(--danger);">
+        <div class="stat-icon">🔥</div>
+        <h3>Oven Temp</h3>
+        <div class="stat-number">456°C</div>
+        <div class="stat-change up">▲ Perfect Bake</div>
+    </section>
+
+    <!-- ======== LIVE INVENTORY ======== -->
+    <section id="inventory-management" class="admin-card" style="margin-top: 12px; margin-bottom: 32px;">
+      <div class="admin-card-header">
+        <h2>Live Ingredient Inventory</h2>
+        <span style="background:rgba(255, 107, 8, 0.1); color:var(--accent); font-weight:600; font-size:0.8rem; padding:6px 16px; border-radius:20px; border:1px solid rgba(255, 107, 8, 0.2);">
+          ● Real-time Inventory Active
+        </span>
+      </div>
+      <div class="inventory-grid" id="admin-inventory-list">
+        <!-- Rendered by admin.js -->
+      </div>
+    </section>
+
+    <!-- ======== OVERVIEW GRID ======== -->
+    <section id="overview" class="dashboard-grid">
+      <!-- Revenue Chart -->
+      <div class="admin-card" style="margin-bottom:0;">
+        <div class="admin-card-header">
+          <h2>Sales Performance</h2>
+          <span style="color:var(--text-muted); font-size:0.85rem;">Past 7 Days (USD)</span>
+        </div>
+        <div class="chart-container">
+          <div class="chart-bar-wrapper"><div class="chart-bar" data-day="Sun"></div><div class="chart-label">Sun</div></div>
+          <div class="chart-bar-wrapper"><div class="chart-bar" data-day="Mon"></div><div class="chart-label">Mon</div></div>
+          <div class="chart-bar-wrapper"><div class="chart-bar" data-day="Tue"></div><div class="chart-label">Tue</div></div>
+          <div class="chart-bar-wrapper"><div class="chart-bar" data-day="Wed"></div><div class="chart-label">Wed</div></div>
+          <div class="chart-bar-wrapper"><div class="chart-bar" data-day="Thu"></div><div class="chart-label">Thu</div></div>
+          <div class="chart-bar-wrapper"><div class="chart-bar" data-day="Fri"></div><div class="chart-label">Fri</div></div>
+          <div class="chart-bar-wrapper"><div class="chart-bar" data-day="Sat"></div><div class="chart-label">Sat</div></div>
+        </div>
+      </div>
+
+      <!-- Station Telemetry -->
+      <div class="admin-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
+        <div class="admin-card-header">
+          <h2>Station Telemetry</h2>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div style="background:var(--bg-tertiary); padding:20px; border-radius:var(--border-radius-md); text-align:center; border:1px solid var(--border-color);">
+            <span style="font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;">Active Staff</span>
+            <div style="font-size:1.6rem; font-weight:700; color:var(--text-primary); margin-top:8px;">4 Pizzaiolos</div>
+          </div>
+          <div style="background:var(--bg-tertiary); padding:20px; border-radius:var(--border-radius-md); text-align:center; border:1px solid var(--border-color);">
+            <span style="font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;">Avg. Bake</span>
+            <div style="font-size:1.6rem; font-weight:700; color:var(--success); margin-top:8px;">90 Seconds</div>
+          </div>
+        </div>
+        <div style="margin-top:24px; border-top:1px dashed var(--border-color); padding-top:20px;">
+          <p style="font-size:0.9rem; color:var(--text-secondary); font-style:italic; line-height:1.6;">"Leopard spotting is looking excellent today. Sourdough hydration is at 72%. Ready for high capacity orders."</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== ORDERS QUEUE ======== -->
+    <section id="orders-management" class="admin-card" style="margin-top:32px;">
+      <div class="admin-card-header">
+        <h2>Live Order Queue</h2>
+        <span style="background:rgba(46,196,182,0.1); color:var(--success); font-weight:600; font-size:0.8rem; padding:6px 16px; border-radius:20px; border:1px solid rgba(46,196,182,0.2);">
+          ● Real-time Sync Active
+        </span>
+      </div>
+      <div class="order-list">
+        <!-- Rendered by admin.js -->
+      </div>
+    </section>
+
+    <!-- ======== MENU MANAGEMENT ======== -->
+    <section id="menu-management" class="dashboard-grid" style="margin-top:32px; align-items:start;">
+      <!-- Add Menu Item Form -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h2>Create Menu Item</h2>
+        </div>
+        <form id="admin-menu-form">
+          <div class="form-group">
+            <label for="menu-name">Pizza Name</label>
+            <input type="text" id="menu-name" class="form-control" placeholder="E.g. Truffle Salami" required>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label for="menu-price">Price (USD)</label>
+              <input type="number" id="menu-price" class="form-control" step="0.01" placeholder="18.99" required>
+            </div>
+            <div class="form-group">
+              <label for="menu-category">Category</label>
+              <select id="menu-category" class="form-control">
+                <option value="signatures">Signatures</option>
+                <option value="classics">Classics</option>
+                <option value="vegan">Vegan / Veggie</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="menu-image">Pizza Image</label>
+            <div class="file-upload-wrapper">
+              <span class="file-upload-label">Choose Image File...</span>
+              <input type="file" id="menu-image" accept="image/*">
+            </div>
+            <img id="image-preview" src="" alt="Selected pizza preview">
+          </div>
+          <div class="form-group">
+            <label for="menu-desc">Description</label>
+            <textarea id="menu-desc" class="form-control" rows="3" placeholder="Sourdough, fresh ingredients..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Create Menu Item</button>
+        </form>
+      </div>
+
+      <!-- Existing Menu Table -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h2>Active Menu Items</h2>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="menu-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Rendered by admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    @media (max-width: 991px) {
+      #mobile-sidebar-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    /* Close sidebar on mobile when clicking overlay */
+    .admin-sidebar.open + .admin-main::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 50;
+    }
+  </style>
+
+  <!-- Toast Container -->
+  <div class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/db.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
