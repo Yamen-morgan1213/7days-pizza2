@@ -619,7 +619,7 @@ window.clearPin = () => {
 };
 
 window.submitPin = () => {
-  const validPasscodes = ['1213', '7777', '7daysadmin', 'admin123'];
+  const validPasscodes = ['7777', '1124'];
   if (validPasscodes.includes(currentPin)) {
     sessionStorage.setItem('admin_authenticated', 'true');
     document.body.classList.remove('locked');
